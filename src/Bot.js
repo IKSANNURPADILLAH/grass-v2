@@ -6,7 +6,7 @@ const { v4: uuidv4 } = require('uuid');
 const { SocksProxyAgent } = require('socks-proxy-agent');
 const { HttpsProxyAgent } = require('https-proxy-agent');
 
-// Fungsi untuk menyimpan proxy ke file.txt dengan menghapus duplikat
+// Fungsi untuk menyimpan proxy 
 function saveProxy(proxy) {
   const filePath = 'proxy_live.txt';
 
@@ -115,18 +115,42 @@ class Bot {
   }
 
   async connectToProxy(proxy, userID) {
-    const formattedProxy = proxy.startsWith('socks5://')
-      ? proxy
-      : proxy.startsWith('http')
-      ? proxy
-      : `socks5://${proxy}`;
-    const proxyInfo = await this.getProxyIP(formattedProxy);
+//    const formattedProxy = proxy.startsWith('socks5://')
+//      ? proxy
+//      : proxy.startsWith('http')
+//      ? proxy
+//      : `socks5://${proxy}`;
+//    const proxyInfo = await this.getProxyIP(formattedProxy);
 
-    if (!proxyInfo) {
-      return;
+ //   if (!proxyInfo) {
+//      return;
+    let formattedProxy;
+    if (
+      /socks5:\/\/.*:.*:.*:.*$/.test(proxy) ||
+      /http:\/\/.*:.*:.*:.*$/.test(proxy)
+    ) {
+      formattedProxy = proxy;
+    } else if (
+      proxy.startsWith('socks5://') ||
+      proxy.startsWith('http://') ||
+      proxy.startsWith('https://')
+    ) {
+      formattedProxy = proxy;
+    } else {
+      formattedProxy = `socks5://${proxy}`;
+//
+	  
     }
 
     try {
+//	    
+      const proxyInfo = await this.getProxyIP(formattedProxy);
+      if (!proxyInfo) {
+        console.error(`Proxy ${formattedProxy} is not reachable.`.red);
+        return;
+      }
+      console.log(`Formatted Proxy: ${formattedProxy}`.cyan);
+//	    
       const agent = formattedProxy.startsWith('http')
         ? new HttpsProxyAgent(formattedProxy)
         : new SocksProxyAgent(formattedProxy);
@@ -147,7 +171,8 @@ class Bot {
 
       ws.on('open', () => {
         console.log(`${jam}:${menit}:${detik} - Connected to proxy ${proxy}`.cyan);
-        console.log(`${jam}:${menit}:${detik} - Proxy IP Info: ${JSON.stringify(proxyInfo)}`.magenta);
+//        console.log(`${jam}:${menit}:${detik} - Proxy IP Info: ${JSON.stringify(proxyInfo)}`.magenta);
+        console.log(`${jam}:${menit}:${detik} - Connected to ${formattedProxy}`.cyan);
         this.sendPing(ws, proxyInfo.ip);
       });
 
