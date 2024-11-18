@@ -107,7 +107,7 @@ class Bot {
       return response.data;
     } catch (error) {
       console.error(
-        `${jam}:${menit}:${detik} - Skipping proxy ${proxy}${jam}:${menit}:${detik} - due to connection error: ${error.message}`
+        `${jam}:${menit}:${detik} - Connection error: ${error.message} skipping proxy ${proxy}`
           .yellow
       );
       return null;
@@ -189,7 +189,7 @@ class Bot {
 
       ws.on('error', (error) => {
         console.error(
-          `${jam}:${menit}:${detik} - WebSocket error on proxy ${proxy}${jam}:${menit}:${detik} - ${error.message}`.red
+          `${jam}:${menit}:${detik} - ${error.message} WebSocket error on proxy ${proxy}`.red
         );
         ws.terminate();
       });
