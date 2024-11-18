@@ -146,10 +146,10 @@ class Bot {
 //	    
       const proxyInfo = await this.getProxyIP(formattedProxy);
       if (!proxyInfo) {
-        console.error(`Proxy ${formattedProxy} is not reachable.`.red);
+        console.error(`${jam}:${menit}:${detik} - Proxy is not reachable ${formattedProxy}`.red);
         return;
       }
-      console.log(`Formatted Proxy: ${formattedProxy}`.cyan);
+      console.log(`${jam}:${menit}:${detik} - Formatted Proxy: ${formattedProxy}`.cyan);
 //	    
       const agent = formattedProxy.startsWith('http')
         ? new HttpsProxyAgent(formattedProxy)
@@ -170,9 +170,10 @@ class Bot {
       });
 
       ws.on('open', () => {
-        console.log(`${jam}:${menit}:${detik} - Connected to proxy ${proxy}`.cyan);
-//        console.log(`${jam}:${menit}:${detik} - Proxy IP Info: ${JSON.stringify(proxyInfo)}`.magenta);
-        console.log(`${jam}:${menit}:${detik} - Connected to ${formattedProxy}`.cyan);
+	console.log(`${jam}:${menit}:${detik} - Connected to ${formattedProxy}`.cyan);
+//        console.log(`${jam}:${menit}:${detik} - Connected to proxy ${proxy}`.cyan);
+        console.log(`${jam}:${menit}:${detik} - Proxy IP Info: ${JSON.stringify(proxyInfo)}`.magenta);
+
         this.sendPing(ws, proxyInfo.ip);
       });
 
@@ -220,7 +221,7 @@ class Bot {
       });
     } catch (error) {
       console.error(
-        `${jam}:${menit}:${detik} - Failed to connect with proxy ${proxy} +-${error.message}`.red
+        `${jam}:${menit}:${detik} - Failed to connect with proxy ${proxy} ${error.message}`.red
       );
     }
   }
