@@ -17,7 +17,7 @@ This repository contains the code for `getgrass-bot`, a bot designed to establis
 2. Navigate to the project directory:
 
    ```bash
-   cd new
+   cd grass-v2
    ```
 
 3. Install the required dependencies using npm:
