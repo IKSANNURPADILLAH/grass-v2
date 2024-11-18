@@ -6,6 +6,34 @@ const { v4: uuidv4 } = require('uuid');
 const { SocksProxyAgent } = require('socks-proxy-agent');
 const { HttpsProxyAgent } = require('https-proxy-agent');
 
+// Fungsi untuk menyimpan proxy ke file.txt dengan menghapus duplikat
+function saveProxy(proxy) {
+  const filePath = 'proxy_live.txt';
+
+  // Baca isi file
+  fs.readFile(filePath, 'utf8', (err, data) => {
+    if (err) {
+      console.error('Error reading proxy_live.txt:', err.message);
+      return;
+    }
+
+    // Split isi file menjadi baris
+    const lines = data.split('\n');
+    // Cek apakah proxy sudah ada di file
+    if (!lines.includes(proxy)) {
+      // Jika belum ada, tambahkan ke file
+      fs.appendFile(filePath, proxy + '\n', (err) => {
+        if (err) {
+          console.error(`${jam}:${menit}:${detik} - ${`Error saving proxy to proxy_live.txt:`.red}`, err.message);
+        } else {
+          console.log(`${jam}:${menit}:${detik} - ${`Saved proxy to proxy_live.txt:`.green}`, proxy);
+        }
+      });
+    } else {
+      console.log(`${jam}:${menit}:${detik} - Proxy already exists in proxy_live:`, proxy);
+    }
+  });
+}
 
 var today = new Date();
 var jam = today.getHours();
@@ -15,7 +43,7 @@ var detik = today.getSeconds();
 const xapiUrl = 'https://api.getgrass.io/retrieveUser';
 
 const xheaders = {
-  'Authorization': '' // Masukkan accesstoken disini
+  'Authorization': 'eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6IkJseGtPeW9QaWIwMlNzUlpGeHBaN2JlSzJOSEJBMSJ9.eyJ1c2VySWQiOiIyb09VZ21XbFlSVW5zTnQ0RXlTUkFWbUw4c04iLCJlbWFpbCI6InNoaWxhY2FudGlrODNAZ21haWwuY29tIiwic2NvcGUiOiJVU0VSIiwiaWF0IjoxNzMxNDM3MTE4LCJuYmYiOjE3MzE0MzcxMTgsImV4cCI6MTc2MjU0MTExOCwiYXVkIjoid3luZC11c2VycyIsImlzcyI6Imh0dHBzOi8vd3luZC5zMy5hbWF6b25hd3MuY29tL3B1YmxpYyJ9.cdgxxQWevvTs40GaMbZrpbTPrEqlezLI-IOk3CNeKGnLKyjePLDwlKs8JsZd0CZyEvlEOtWCSGcP-nOg9mxBmSrVKSEdbJQu6-35UUbfEZohiY2tOrGEdNIS2hrpf1OOQc7vTrQM2R6UUJLwk5ww5JvNvMy1qOg0m8-97rp2B0R9Pi5Fi-syx5iN_OQa6i0nM74_VEX9y5Xf-IFYl3ieOW-CjPWmt28dg5EdvONoO_pd1gIwEcMzGYI8kQfvLuJjkLFXKiANxVGKBN88cjmDU7dm8gLTr8_a9EmtB9Brz3jZiU3ExyJCM05KK4SlLXzr_9btgTfiNSyKbsOdVWiFng' // Masukkan accesstoken disini
 };
 // Mengirim permintaan GET ke API dengan header
 axios.get(xapiUrl, { headers: xheaders })
@@ -75,6 +103,7 @@ class Bot {
         httpsAgent: agent,
       });
 	console.log(`${jam}:${menit}:${detik} - Connected through proxy ${proxy}`.green);
+    saveProxy(proxy);
       return response.data;
     } catch (error) {
       console.error(
